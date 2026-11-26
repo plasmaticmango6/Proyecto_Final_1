@@ -18,9 +18,9 @@ periodo escolar:
 */
 
 /*comandos para subir sus cambios a github
-git remote add origin https://github.com/plasmaticmango6/Proyecto_Final_1.git
-git branch -M main
-git push -u origin main*/
+git add .
+git commit -m "comentario que mencione los cambios realizados"
+git push*/
 
 #include <stdio.h>
 #include <stdlib.h>
