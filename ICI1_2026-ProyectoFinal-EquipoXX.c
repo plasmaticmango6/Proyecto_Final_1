@@ -22,6 +22,10 @@ git add .
 git commit -m "comentario que mencione los cambios realizados"
 git push*/
 
+/*comandos para actualizar el codigo, en caso de que haya un cambio
+git status
+git pull*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
