@@ -36,8 +36,7 @@ git pull*/
 #include <locale.h>
 // #include <windows.h>
 
-int generarNombre(char resultado[], size_t capacidadResultado, const char nombres[][30], size_t cantidadNombres,
-                  const char apellidos[][30], size_t cantidadApellidos)
+int generarNombre(char resultado[], size_t capacidadResultado, const char nombres[][30], size_t cantidadNombres, const char apellidos[][30], size_t cantidadApellidos)
 {
     if (cantidadNombres == 0 || cantidadApellidos == 0 || capacidadResultado == 0)
         return 0;
@@ -50,27 +49,24 @@ int generarNombre(char resultado[], size_t capacidadResultado, const char nombre
     return caracteresEscritos >= 0 && (size_t)caracteresEscritos < capacidadResultado;
 }
 
-int generarTrabajador(const char nombres[][30], size_t cantidadNombres, const char apellidos[][30],
-                      size_t cantidadApellidos, char trabajadores[][70], int claves[], float salarios[])
+int generarTrabajador(const char nombres[][30], size_t cantidadNombres, const char apellidos[][30], size_t cantidadApellidos, char trabajadores[][70], int claves[], float salarios[])
 {
     for (size_t i = 0; i < 10; i++)
     {
-        if (!generarNombre(trabajadores[i], sizeof(trabajadores[i]), nombres, cantidadNombres,
-                           apellidos, cantidadApellidos))
+        if (!generarNombre(trabajadores[i], sizeof(trabajadores[i]), nombres, cantidadNombres, apellidos, cantidadApellidos))
         {
             fprintf(stderr, "No se pudo generar el nombre del trabajador.\n");
             return 1;
         }
 
         salarios[i] = (float)(rand() % 20000 + 5000);
-        claves[i] = rand() % 9999 + 1000;
+        claves[i] = rand() % 9000 + 1000;
     }
 
     return 0;
 }
 
-void mostrarUnTrabajador(const char trabajadores[][70], const int claves[], const float salarios[],
-                         size_t cantidadTrabajadores, size_t posicionTrabajador)
+void mostrarUnTrabajador(const char trabajadores[][70], const int claves[], const float salarios[], size_t cantidadTrabajadores, size_t posicionTrabajador)
 {
     if (posicionTrabajador >= cantidadTrabajadores)
     {
@@ -169,6 +165,7 @@ int main()
     // SetConsoleOutputCP(65001); // para embarcadero
 
     srand((unsigned int)time(NULL));
+
     char opcionMenu;
 
     const char nombres[][30] = {"Axel", "Diego", "Rubas", "Dante", "Omar", "Dafne", "Beatriz", "Lucía", "Sofía",
@@ -182,12 +179,8 @@ int main()
     int claves[10];
     float salarios[10];
 
-    if (generarTrabajador(nombres, sizeof(nombres) / sizeof(nombres[0]),
-                          apellidos, sizeof(apellidos) / sizeof(apellidos[0]),
-                          trabajadores, claves, salarios) != 0)
-    {
+    if (generarTrabajador(nombres, sizeof(nombres) / sizeof(nombres[0]), apellidos, sizeof(apellidos) / sizeof(apellidos[0]), trabajadores, claves, salarios) != 0)
         return 1;
-    }
 
     printf("--CONTROL DEL SISTEMA--");
     do
