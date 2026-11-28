@@ -29,6 +29,8 @@ git pull*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
+#include <string.h>
 
 // el locale y el windows es para los acentos, depende de en que sistema operativo esten usando usen locale o windows
 #include <locale.h>
@@ -67,15 +69,86 @@ int generarTrabajador(const char nombres[][30], size_t cantidadNombres, const ch
     return 0;
 }
 
-void mostrarUnTrabajador(char nombres[], int claves[], float salarios[])
+void mostrarUnTrabajador(const char trabajadores[][70], const int claves[], const float salarios[],
+                         size_t cantidadTrabajadores, size_t posicionTrabajador)
 {
-    // cada que se llame a esta funcion se muestra la informacion de un trabajador en especifico.
+    if (posicionTrabajador >= cantidadTrabajadores)
+    {
+        printf("La posicion del trabajador no es valida.\n");
+        return;
+    }
+
+    printf("\nTrabajador: %s\n", trabajadores[posicionTrabajador]);
+    printf("Salario: $%.2f\n", salarios[posicionTrabajador]);
+    printf("Clave / ID: %d\n", claves[posicionTrabajador]);
 }
 
-void buscarRegistro(char nombres[], int claves[], float salarios[])
+void buscarRegistro(const char trabajadores[][70], const int claves[], const float salarios[], size_t cantidadTrabajadores)
 {
-    // esta funcion solo es para como lo dice buscar un registro por nombre o por clave del trabajador, y mostrar esa informacion.
-    // esta funcion de puede usar en apartados como: eliminar un registro, modificar un registro y nuevamente buscar un registro.
+    char tipoBusqueda;
+    printf("Buscar por nombre (N) o por clave (C): ");
+    if (scanf(" %c", &tipoBusqueda) != 1)
+    {
+        printf("No se pudo leer el tipo de busqueda.\n");
+        return;
+    }
+
+    int caracter;
+    while ((caracter = getchar()) != '\n' && caracter != EOF)
+    {
+    }
+
+    size_t coincidencias = 0;
+    if (tipoBusqueda == 'N' || tipoBusqueda == 'n')
+    {
+        char nombreBuscado[70];
+        printf("Ingrese el nombre completo: ");
+        if (fgets(nombreBuscado, sizeof(nombreBuscado), stdin) == NULL)
+        {
+            printf("No se pudo leer el nombre.\n");
+            return;
+        }
+        nombreBuscado[strcspn(nombreBuscado, "\n")] = '\0';
+
+        for (size_t i = 0; i < cantidadTrabajadores; i++)
+        {
+            if (strcmp(trabajadores[i], nombreBuscado) == 0)
+            {
+                mostrarUnTrabajador(trabajadores, claves, salarios, cantidadTrabajadores, i);
+                coincidencias++;
+            }
+        }
+    }
+    else if (tipoBusqueda == 'C' || tipoBusqueda == 'c')
+    {
+        int claveBuscada;
+        printf("Ingrese la clave: ");
+        scanf("%d", &claveBuscada);
+        if (claveBuscada == NULL)
+        {
+            printf("No se pudo leer la clave.\n");
+            return;
+        }
+
+        for (size_t i = 0; i < cantidadTrabajadores; i++)
+        {
+            if (claves[i] == claveBuscada)
+            {
+                mostrarUnTrabajador(trabajadores, claves, salarios, cantidadTrabajadores, i);
+                coincidencias++;
+            }
+        }
+    }
+    else
+    {
+        printf("Opcion de busqueda no valida.\n");
+        return;
+    }
+
+    if (coincidencias == 0)
+    {
+        printf("No se encontro ningun trabajador con ese dato.\n");
+    }
 }
 
 void mostrarMenu()
@@ -135,7 +208,7 @@ int main()
             break;
         case 'B':
         case 'b':
-            /* code */
+            buscarRegistro(trabajadores, claves, salarios, 10);
             break;
         case 'C':
         case 'c':
