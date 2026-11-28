@@ -31,8 +31,41 @@ git pull*/
 #include <time.h>
 
 // el locale y el windows es para los acentos, depende de en que sistema operativo esten usando usen locale o windows
-// #include <locale.h>
+#include <locale.h>
 // #include <windows.h>
+
+int generarNombre(char resultado[], size_t capacidadResultado, const char nombres[][30], size_t cantidadNombres,
+                  const char apellidos[][30], size_t cantidadApellidos)
+{
+    if (cantidadNombres == 0 || cantidadApellidos == 0 || capacidadResultado == 0)
+        return 0;
+
+    size_t indiceNombre = (size_t)rand() % cantidadNombres;
+    size_t indiceApellido = (size_t)rand() % cantidadApellidos;
+    size_t indiceApellido2 = (size_t)rand() % cantidadApellidos;
+    int caracteresEscritos = snprintf(resultado, capacidadResultado, "%s %s %s", nombres[indiceNombre], apellidos[indiceApellido], apellidos[indiceApellido2]);
+
+    return caracteresEscritos >= 0 && (size_t)caracteresEscritos < capacidadResultado;
+}
+
+int generarTrabajador(const char nombres[][30], size_t cantidadNombres, const char apellidos[][30],
+                      size_t cantidadApellidos, char trabajadores[][70], int claves[], float salarios[])
+{
+    for (size_t i = 0; i < 10; i++)
+    {
+        if (!generarNombre(trabajadores[i], sizeof(trabajadores[i]), nombres, cantidadNombres,
+                           apellidos, cantidadApellidos))
+        {
+            fprintf(stderr, "No se pudo generar el nombre del trabajador.\n");
+            return 1;
+        }
+
+        salarios[i] = (float)(rand() % 20000 + 5000);
+        claves[i] = rand() % 9999 + 1000;
+    }
+
+    return 0;
+}
 
 void mostrarUnTrabajador(char nombres[], int claves[], float salarios[])
 {
@@ -47,35 +80,58 @@ void buscarRegistro(char nombres[], int claves[], float salarios[])
 
 void mostrarMenu()
 {
-    printf("--------------------------");
-    printf("A) Mostrar Trabajadores");
-    printf("B) Buscar un Registro");
-    printf("C) Insertar nuevo Registro");
-    printf("D) Eliminar un Registro");
-    printf("E) Modificar un Registro");
-    printf("F) Salir");
-    printf("--------------------------");
+    printf("\n--------------------------\n");
+    printf("A) Mostrar Trabajadores\n");
+    printf("B) Buscar un Registro\n");
+    printf("C) Insertar nuevo Registro\n");
+    printf("D) Eliminar un Registro\n");
+    printf("E) Modificar un Registro\n");
+    printf("F) Salir\n");
+    printf("--------------------------\n");
 }
 
 int main()
 {
-    // setlocale(LC_ALL, ""); // para MAC o VS
+    setlocale(LC_ALL, ""); // para MAC o VS
     // SetConsoleOutputCP(65001); // para embarcadero
 
     srand((unsigned int)time(NULL));
     char opcionMenu;
 
+    const char nombres[][30] = {"Axel", "Diego", "Rubas", "Dante", "Omar", "Dafne", "Beatriz", "Lucía", "Sofía",
+                                "Paula", "Daniela", "Carla", "Lucas", "Pablo", "Leonardo", "Manuel", "Adrián", "Claudia", "Valeria", "Yaretzy"};
+
+    const char apellidos[][30] = {"Gonzalez", "Martinez", "Gimenez", "Duarte", "Herrera", "Cabrera", "Macias", "Torres",
+                                  "Muñoz", "Diaz", "Perez", "Fuentes", "Vega", "Silva", "Márquez", "Sanchez", "Ortiz", "Campos",
+                                  "Espinoza", "Gutiérrez", "Mares", "Arechar"};
+
+    char trabajadores[10][70];
+    int claves[10];
+    float salarios[10];
+
+    if (generarTrabajador(nombres, sizeof(nombres) / sizeof(nombres[0]),
+                          apellidos, sizeof(apellidos) / sizeof(apellidos[0]),
+                          trabajadores, claves, salarios) != 0)
+    {
+        return 1;
+    }
+
     printf("--CONTROL DEL SISTEMA--");
     do
     {
         mostrarMenu();
-        printf("Ingrese una opcion: ");
-        scanf("%c", &opcionMenu);
+        printf("\nIngrese una opcion: ");
+        scanf(" %c", &opcionMenu);
         switch (opcionMenu)
         {
         case 'A':
         case 'a':
-            /* code */
+            for (size_t i = 0; i < 10; i++)
+            {
+                printf("\nTrabajador %zu: %s\n", i + 1, trabajadores[i]);
+                printf("Salario: $%.2f\n", salarios[i]);
+                printf("Clave / ID: %d\n", claves[i]);
+            }
             break;
         case 'B':
         case 'b':
@@ -100,7 +156,7 @@ int main()
         default:
             break;
         }
-    } while (opcionMenu != 'f' || opcionMenu != 'F');
+    } while (opcionMenu != 'f' && opcionMenu != 'F');
 
     return 0;
 }
